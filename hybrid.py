@@ -92,20 +92,19 @@ def assembly(mode):
         keyword = str(input("[+] Enter your key - "))
         string = text
         key = generateKey(string, keyword) # The newly generated autokey is stored in the key variable. 
-        print("String : " , string)
+        print("Plain Text : " , string)
         print("Key : ", key) 
         cipher_text = cipherText(string,key) 
         finished_text = encoding(cipher_text)
         print("After Vignere Cipher : ", cipher_text)
 
-        print("\n »» Encoded Text via Hybrid Application of Vignere and Polybius Square Cipher : ««")
-        print(finished_text)
+        print("Encoded Text via Hybrid Application of Vignere and Polybius Square Cipher : ", finished_text)
+        print()
 
     else:
         key = str(input("[+] Enter your key - "))
         finished_text = decoding(text, key)
-        print("\n »» Decoded Text via Hybrid Application of Vignere and Polybius Square Cipher : ««")
-        print(finished_text)
+        print("Decoded Text via Hybrid Application of Vignere and Polybius Square Cipher :", finished_text)
 
     
 

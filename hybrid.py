@@ -229,8 +229,10 @@ def assembly(mode):
         encodeText(string)
         print("The given image has been Encoded.") 
 
-    else:
+    elif mode == 1:
         print("Decoded message is : " + decodeText())
+    else:
+        print("Invalid Option")
 
 
 

@@ -1,11 +1,29 @@
 # importing the required libraries  
+from ast import keyword
 import cv2  
 import os
 import numpy as np  
 import types   
+import streamlit as st
 from string import ascii_uppercase as alphabet
+from PIL import Image
+
+st.set_page_config(layout="wide", page_title="Enhanced Algorithms")
+
+
+# hide_menu_style = """
+#         <style>
+#         #MainMenu {visibility: hidden;}
+#         footer {visibility: hidden;}
+#         </style>
+#         """
+# st.markdown(hide_menu_style, unsafe_allow_html=True)
+
+
+
 
 path = os.getcwd()
+
 # converting types to binary  
 def msg_to_bin(msg):  
     if type(msg) == str:  
@@ -85,41 +103,54 @@ def show_data(img):
 
 # defining function to encode data into Image  
 def encodeText(data):  
-    img_name = input("Enter name of the image (with extension): ")
-    img_name = os.path.join(path,img_name)  
-    # reading the input image using OpenCV-Python  
-    img = cv2.imread(img_name)  
-    # printing the details of the image    
-    data = data
-    if (len(data) == 0):  
-        raise ValueError('Data is Empty')  
-      
-    file_name = input("Enter name of the new encoded image (with extension): ") 
-    file_name = os.path.join(path,file_name)
-    # calling the hide_data() function to hide the secret message into the selected image  
-    encodedImage = hide_data(img, data)  
-    cv2.imwrite(file_name, encodedImage) 
-    print("The shape of the image is: ", img.shape) # checking the image shape to calculate the number of bytes in it  
-    #print("The original image is as shown below: ")  
-    # resizing the image as per the need  
-    resizedImg = cv2.resize(img, (500, 500))  
-    # displaying the image  
-    cv2.imshow('',resizedImg)
-    cv2.waitKey(0) 
+
+    st.write("The following images are available to Encode : ")
+    st.write("shooting_stars.png")
+    st.write("srm_logo.png")
+    st.write("sunset.png")
+    
+    img_name1 = st.text_input("Type the name of the Image")
+
+    if len(img_name1) != 0:
+        img_name = os.path.join(path,img_name1) 
+        # reading the input image using OpenCV-Python  
+        img = cv2.imread(img_name)  
+        data = data
+        if (len(data) == 0):  
+            raise ValueError('Data is Empty')  
+        file_name = st.text_input("Enter name of the new encoded image (with extension): ") 
+        
+        if len(file_name) != 0:
+            file_name = os.path.join(path,file_name)
+            # calling the hide_data() function to hide the secret message into the selected image  
+            encodedImage = hide_data(img, data)  
+            cv2.imwrite(file_name, encodedImage) 
+            # printing the image shape
+            st.write("The shape of the image is: ", img.shape)   
+            image = Image.open(os.path.join(path,file_name))
+            st.image(image, img_name1)
+            st.write("The given Image has been Encoded.") 
   
 # defining the function to decode the data in the image  
 def decodeText():  
     # reading the image containing the hidden image  
-    img_name = input("Enter the name of the Steganographic image that has to be decoded (with extension): ")  
-    img = cv2.imread(img_name)  # reading the image using the imread() function  
-  
-    key = str(input("[+] Enter your key - "))
-    print("The Steganographic image is as follow: ")  
-    resizedImg = cv2.resize(img, (500, 500))    # resizing the actual image as per the needs  
-    cv2.imshow('',resizedImg)  # displaying the Steganographic image  
-    cv2.waitKey(0) 
-    text = show_data(img)  
-    return text
+    img_name = st.text_input("Enter the name of the Image to Decode : ")
+
+    if len(img_name) != 0:
+        # img_name = input("Enter file path of the Steganographic image that has to be decoded (with extension): ")  
+        img = cv2.imread(img_name)  # reading the image using the imread() function  
+        keyword = st.text_input("Enter the Key : ")
+
+        if len(keyword) != 0:
+            # key = str(input("[+] Enter your key - "))
+            st.write("The Steganographic image is as follow: ")  
+            # resizedImg = cv2.resize(img, (500, 500))    # resizing the actual image as per the needs  
+            # cv2.imshow('',resizedImg)  # displaying the Steganographic image  
+            # cv2.waitKey(0)
+            image = Image.open(os.path.join(path,img_name))
+            st.image(image, img_name) 
+            text = show_data(img)  
+            st.write("Decoded message is : " , text)
 
 
 
@@ -210,38 +241,58 @@ def decoding(text, key):
 
 
 def assembly(mode):
-    if mode == 0:
-        text = str(input("[+] Enter your plain text - "))
-        text_upper = text.upper()
-        keyword = str(input("[+] Enter your key - "))
-        keyword = keyword.upper()
-        string = text_upper
-        key = generateKey(string, keyword) # The newly generated autokey is stored in the key variable. 
-        print("String : " , string)
-        print("Key : ", key) 
-        cipher_text = cipherText(string,key) 
-        finished_text = encoding(cipher_text)
-        print("After Vignere Cipher : ", cipher_text)
+    if mode == "0":
+        text = st.text_input(" [+] Enter your plain text ")
+        st.write("")
 
-        print("\n »» Encoded Text via Hybrid Application of Vignere and Polybius Square Cipher : ««")
-        print(finished_text)
-        print()
-        encodeText(string)
-        print("The given image has been Encoded.") 
+        if len(text) != 0 :
+        
+            text_upper = text.upper()
+            keyword = st.text_input(" [+] Enter your key ")
+            st.write("")
 
-    elif mode == 1:
-        print("Decoded message is : " + decodeText())
-    else:
-        print("Invalid Option")
+            if len(keyword) != 0 :
+                keyword = keyword.upper()
+                string = text_upper
+                key = generateKey(string, keyword) # The newly generated autokey is stored in the key variable. 
+                
+                st.write("String : ", string)
+                st.write("Key : ", key)
+                st.write("Save the Key in a Safe Place! 😬") 
+                
+                cipher_text = cipherText(string,key) 
+                finished_text = encoding(cipher_text)
+                
+                st.write("")
+                st.write("After  Vignere  Cipher : ", cipher_text)
+                st.write("Encoded  Text  via  Hybrid  Application  of  Vignere  and  Polybius  Square  Cipher  : ", finished_text)
+                st.write("")
+                encodeText(string)
+                
+
+
+        
+
+
+    elif mode == "1":
+        ans = decodeText()
+        
 
 
 
 def main():
-    print("[x]Hybrid of Vigenere & Polybius Square Cryptography Algorithm. [x]")
-    print(" • 0. Encoding mode.\n • 1. Decoding mode.")
+    st.title("Steganographic Implementation of Enhanced Cryptographic Algorithms")
+    st.text(" This Research Entails involving novelty of the Vigenere & Polybius Square Cryptography Algorithm and to showcase their application via Steganography.")
+    #print(" • 0. Encoding mode.\n • 1. Decoding mode.")
+    
+    st.text("Select the Program Mode : ")
+    st.text("0 : Encoding ")
+    st.text("1 : Decoding ")
 
-    mode = int(input("[?] Select program mode - "))
-    assembly(mode)
+    user_input = st.text_input("Enter the selection")
+
+
+    assembly(user_input)
 
 
 if __name__ == '__main__':

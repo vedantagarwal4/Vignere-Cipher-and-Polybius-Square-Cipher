@@ -1,5 +1,5 @@
 numpy==1.22.2
-opencv_python==4.3.0.36
+opencv-python
 Pillow==9.0.1
 streamlit==1.5.1
 cv2==4.3.0

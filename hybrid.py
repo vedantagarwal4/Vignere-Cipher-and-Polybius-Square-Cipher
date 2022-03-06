@@ -90,7 +90,7 @@ def show_data(img):
             bin_data += b[-1]  
     # split by 8-Bits  
     allBytes = [bin_data[i: i + 8] for i in range(0, len(bin_data), 8)]  
-    # converting from bits to characters
+    # converting from bits to characters  
     decodedData = ""  
     for bytes in allBytes:  
         decodedData += chr(int(bytes, 2))  
